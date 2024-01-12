@@ -3,15 +3,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 public class Accounts {
-    public HashMap<Integer, Account> Accounts; // stored student number
-
+    public static HashMap<Integer, Account> accountRepository; // stored student number
+    public Accounts(){}
     public Account getUser(int studentNumber) {
-        return Accounts.get(studentNumber);
+        return accountRepository.get(studentNumber);
     }
 
     public ArrayList<Account> sortAccounts(int index) {
         // upload accounts to array
-        ArrayList<Account> repository = new ArrayList<>(Accounts.values());
+        ArrayList<Account> repository = new ArrayList<>(accountRepository.values());
 
         // sort
         switch (index) {

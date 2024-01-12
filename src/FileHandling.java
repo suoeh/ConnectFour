@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class FileHandling extends Accounts {
+public class FileHandling {
     public FileHandling() throws IOException {}
 
     public void readMembers() throws IOException {
@@ -18,7 +18,7 @@ public class FileHandling extends Accounts {
             int rating = Integer.parseInt(values[5]);
 
             Account account = new Account(name, studentNumber, password);
-            Accounts.put(studentNumber, account);
+            Accounts.accountRepository.put(studentNumber, account);
         }
 
         accountReader.close();
@@ -38,7 +38,7 @@ public class FileHandling extends Accounts {
             int rating = Integer.parseInt(values[5]);
 
             Account account = new Account(name, studentNumber, password);
-            Accounts.put(studentNumber, account);
+            Accounts.accountRepository.put(studentNumber, account);
         }
     }
 
