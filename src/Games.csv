@@ -1,0 +1,5 @@
+studentnum1,studentnum2,true/false,10,20,0,0,0,0,0,moves,tourneyID
+
+game is in format of 7 columns of height 6, left to right, down to up
+true for student1 win
+-1 tourneyID for nothing
