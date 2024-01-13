@@ -11,18 +11,17 @@ public class Accounts {
 
     public ArrayList<Account> sortAccounts(int index) {
         // upload accounts to array
-        ArrayList<Account> repository = new ArrayList<>(accountRepository.values());
-
+        ArrayList<Account> tempList = new ArrayList<>(accountRepository.values());
         // sort
         switch (index) {
-            case 1 -> repository.sort(Comparator.comparing(o -> o.name));
-            case 2 -> repository.sort(Comparator.comparing(o -> o.studentNumber));
-            case 3 -> repository.sort(Comparator.comparing(o -> o.wins));
-            case 4 -> repository.sort(Comparator.comparing(o -> o.losses));
-            case 5 -> repository.sort(Comparator.comparing(o -> o.rating));
+            case 1 -> tempList.sort(Comparator.comparing(o -> o.name));
+            case 2 -> tempList.sort(Comparator.comparing(o -> o.studentNumber));
+            case 3 -> tempList.sort(Comparator.comparing(o -> o.wins));
+            case 4 -> tempList.sort(Comparator.comparing(o -> o.losses));
+            case 5 -> tempList.sort(Comparator.comparing(o -> o.rating));
         }
 
-        return repository;
+        return tempList;
     }
 
 }

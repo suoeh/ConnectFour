@@ -3,19 +3,20 @@ public class Game {
     public int gameID;
     public int playerOne;
     public int playerTwo;
-    public boolean outcome;
-    public int[] field = new int[7];
-    public int moves;
+    public int outcome;
+    public int[] field;
+    public String moves;
     public int tourneyID;
 
     // constructor !
-    public game() {
-        this.name = name;
-        this.studentNumber = studentNumber;
-        this.password = password;
-        this.wins = 0;
-        this.losses = 0;
-        this.rating = 1000;
+    public Game(int playerOne, int playerTwo, int outcome, int[] field, String moves, int tourneyID){
+        this.gameID = Games.gameCounter++;
+        this.playerOne = playerOne;
+        this.playerTwo = playerTwo;
+        this.outcome = outcome;
+        this.field = field;
+        this.moves = moves;
+        this.tourneyID = tourneyID;
     }
 
 }

@@ -1,4 +1,9 @@
+import java.util.ArrayList;
+
 public class Games {
     // variables
-    static int gameCounter;
+    public static ArrayList<Game> repository = new ArrayList<>();
+    public Games(){}
+
+    static int gameCounter = 0;
 }
