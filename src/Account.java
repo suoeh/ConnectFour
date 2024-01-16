@@ -8,6 +8,7 @@ public class Account {
 
     public int wins;
     public int losses;
+    public int ties;
     public int rating;
 
     // constructor !
@@ -17,7 +18,18 @@ public class Account {
         this.password = password;
         this.wins = 0;
         this.losses = 0;
+        this.ties = 0;
         this.rating = 1000;
+    }
+
+    public Account(String name, int studentNumber, String password, int wins, int losses, int ties, int rating) {
+        this.name = name;
+        this.studentNumber = studentNumber;
+        this.password = password;
+        this.wins = wins;
+        this.losses = losses;
+        this.ties = ties;
+        this.rating = rating;
     }
 
     // getter

@@ -4,26 +4,30 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Menu {
-    BufferedWriter writer = new BufferedWriter(new FileWriter("Accounts.csv"));
-    public Menu() throws IOException {}
+    public Menu() {}
 
-    // implement menu gui
-
-    public boolean validatePassword(String password) {
-        if (password.length() < 8) {return false;}
-        return Objects.equals(password, password.replaceAll("\\p{Punct}", ""));
+    public boolean validateString(String string) {
+        return !Objects.equals(string, string.replaceAll("\\p{Punct}", ""));
     }
 
-    public void createAccount(String name, String password) throws IOException {
-        name = name.replaceAll("\\p{Punct}", "");
-        int studentNumber = (int) (Math.random() * 1000000);
-        while (Accounts.accountRepository.get(studentNumber) == null) {
-            studentNumber = (int) (Math.random() * 1000000);
+    public boolean validateNumber(String string) {
+        try {
+            Integer.parseInt(string);
+            return false;
+        } catch (NumberFormatException e) {
+            return true;
         }
-        Account account = new Account(name, studentNumber, password);
-        Accounts.accountRepository.put(studentNumber, account);
+    }
+
+    public void createAccount(String name, String studentNumber, String password) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("src/Accounts.csv", true));
+        name = name.replaceAll("\\p{Punct}", "");
+        int number = Integer.parseInt(studentNumber);
+        Account account = new Account(name, number, password);
+        Accounts.accountRepository.put(number, account);
         writer.newLine();
-        writer.write(name + "," + studentNumber + "," + password + ",0,0,1000");
+        writer.write(name + "," + studentNumber + "," + password + ",0,0,0,1000");
+        writer.close();
     }
 
     public void login(int studentNumber, String password) {
@@ -33,7 +37,4 @@ public class Menu {
             homeScreen.homeScreen();
         }
     }
-
-
-
 }

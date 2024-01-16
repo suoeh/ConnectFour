@@ -4,7 +4,13 @@ import java.util.HashMap;
 
 public class Accounts {
     public static HashMap<Integer, Account> accountRepository; // stored student number
-    public Accounts(){}
+    public Accounts(){
+        accountRepository = new HashMap<Integer, Account>();
+    }
+
+    public void uploadAccount(int studentNumber, Account account) {
+        accountRepository.put(studentNumber, account);
+    }
     public Account getUser(int studentNumber) {
         return accountRepository.get(studentNumber);
     }

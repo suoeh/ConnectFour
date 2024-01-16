@@ -1,8 +1,8 @@
 public class Simulate {
     public int playerOne;
     public int playerTwo;
-    public int outcome = 0;
-    public int[] field = new int[7];
+    public int outcome;
+    public int[][] field;
     public String moves;
     public int tourneyID;
 
@@ -11,8 +11,13 @@ public class Simulate {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
         this.outcome = 0;
-        this.field = new int[7];
+        this.field = new int[7][6];
         this.moves = "";
         this.tourneyID = tourneyID;
+    }
+
+    public void endGame(){
+        Game game = new Game(playerOne, playerTwo, outcome, moves, tourneyID);
+        Games.repository.add(game);
     }
 }
