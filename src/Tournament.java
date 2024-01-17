@@ -11,13 +11,14 @@ public class Tournament {
     public int size;
     public int[] games;
 
-    // constructor !
+    // base constructor ! used for initializing new tournament objects to store/write
     public Tournament(int[] roster, int size) {
         this.tourneyID = ++Tournaments.tourneyCounter;
         this.roster = roster;
         this.size = size;
     }
 
+    // overwritten constructor for reading from csv
     public Tournament(int[] roster, int size, int[] games) {
         this.tourneyID = ++Tournaments.tourneyCounter;
         this.roster = roster;
@@ -25,11 +26,12 @@ public class Tournament {
         this.games = games;
     }
 
-    // overwritten method
+    // overwritten base method for different tournament types
     public Queue<Integer> createGames(){
         return null;
     }
 
+    // converts tournament object into csv friendly data
     public String toString() {
         String tempString = Arrays.toString(roster);
         String tempString2 = Arrays.toString(games);
