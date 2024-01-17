@@ -18,7 +18,7 @@ public class GUI {
         JButton accountMenuSignInButton = new JButton("Sign in");
         JTextField signInText1 = new JTextField("Name", 20);
         JTextField signInText2 = new JTextField("Student number", 20);
-        JTextField signInText3 = new JTextField("Password", 20);
+        JTextField signInText3 = new JTextField("Password (characters only)", 20);
         JButton signInBackButton = new JButton("Back");
         JButton signInLogInButton = new JButton("Log in");
         JButton signInSignUpButton = new JButton("Sign up");
@@ -36,7 +36,7 @@ public class GUI {
             signInErrorLabel.setText("");
             signInText1.setText("Name");
             signInText2.setText("Student number");
-            signInText3.setText("Password");
+            signInText3.setText("Password (characters only)");
         });
         signInLogInButton.addActionListener(e -> {
             Menu menu = new Menu();
@@ -54,7 +54,7 @@ public class GUI {
                 signInErrorLabel.setText("");
                 signInText1.setText("Name");
                 signInText2.setText("Student number");
-                signInText3.setText("Password");
+                signInText3.setText("Password (characters only)");
             }
         });
         signInSignUpButton.addActionListener(e -> {
