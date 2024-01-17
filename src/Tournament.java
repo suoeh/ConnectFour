@@ -18,6 +18,13 @@ public class Tournament {
         this.winner = -1;
     }
 
+    public Tournament(int[] roster, int size, int winner) {
+        this.tourneyID = ++Tournaments.tourneyCounter;
+        this.roster = roster;
+        this.size = size;
+        this.winner = winner;
+    }
+
     // overwritten method
     public Queue<Integer> createGames(){
         return null;

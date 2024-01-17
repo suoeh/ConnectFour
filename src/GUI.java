@@ -418,8 +418,8 @@ public class GUI {
         });
         viewStatsPanel.add(viewGamesButton);
 
-        String[] tourneyColumns = {"Roster", "Winner"};
-        Object[][] tourneyData = new Object[Tournaments.tourneyCounter + 100][2];
+        String[] tourneyColumns = {"ID","Roster", "Winner"};
+        Object[][] tourneyData = new Object[Tournaments.tourneyCounter + 100][3];
 
         JTable tourneyTable = new JTable(tourneyData, tourneyColumns);
         JScrollPane tourneyScrollPane = new JScrollPane(tourneyTable);
@@ -433,8 +433,9 @@ public class GUI {
             for (int i = 0; i < size; i++) {
                 int[] tempRoster = tempList.get(i).roster;
                 String stringedRoster = Arrays.toString(tempRoster).replace(",", "");
-                tourneyTable.getModel().setValueAt(stringedRoster,i, 0);
-                tourneyTable.getModel().setValueAt(tempList.get(i).winner, i, 1);
+                tourneyTable.getModel().setValueAt(tempList.get(i).tourneyID,i, 0);
+                tourneyTable.getModel().setValueAt(stringedRoster,i, 1);
+                tourneyTable.getModel().setValueAt(tempList.get(i).winner, i, 2);
             }
             viewStats.setVisible(false);
             viewTourneys.setVisible(true);

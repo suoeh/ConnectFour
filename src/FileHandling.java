@@ -65,7 +65,7 @@ public class FileHandling {
                 rosterID[counter++] = tempID;
             }
 
-            Tournament tourney = new Tournament(rosterID, roster.length);
+            Tournament tourney = new Tournament(rosterID, roster.length, winner);
             // System.out.println(game);
             Tournaments.repository.add(tourney);
         }
