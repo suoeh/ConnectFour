@@ -418,7 +418,7 @@ public class GUI {
         });
         viewStatsPanel.add(viewGamesButton);
 
-        String[] tourneyColumns = {"ID","Roster", "Winner"};
+        String[] tourneyColumns = {"ID","Roster", "Game IDs"};
         Object[][] tourneyData = new Object[Tournaments.tourneyCounter + 100][3];
 
         JTable tourneyTable = new JTable(tourneyData, tourneyColumns);
@@ -432,10 +432,12 @@ public class GUI {
             int size = tempList.size();
             for (int i = 0; i < size; i++) {
                 int[] tempRoster = tempList.get(i).roster;
+                int[] tempGameRoster = tempList.get(i).games;
                 String stringedRoster = Arrays.toString(tempRoster).replace(",", "");
+                String stringedGameRoster = Arrays.toString(tempGameRoster).replace(",", "");
                 tourneyTable.getModel().setValueAt(tempList.get(i).tourneyID,i, 0);
                 tourneyTable.getModel().setValueAt(stringedRoster,i, 1);
-                tourneyTable.getModel().setValueAt(tempList.get(i).winner, i, 2);
+                tourneyTable.getModel().setValueAt(stringedGameRoster, i, 2);
             }
             viewStats.setVisible(false);
             viewTourneys.setVisible(true);
@@ -540,6 +542,7 @@ public class GUI {
             int counter = 0;
             boolean valid = true;
             int tempID;
+            if (roster.length < 2) {valid = false;}
             for (String s : roster) {
                 try {
                     tempID = Integer.parseInt(s);
@@ -552,21 +555,44 @@ public class GUI {
                 }
             }
 
-            Set<Integer> set = new HashSet<>();
+            Hashtable<Integer, Integer> set = new Hashtable<>();
             for (int num : rosterID) {
-                if (set.contains(num)) {
+                if (set.containsKey(num)) {
                     valid = false;
                 }
-                set.add(num);
+                set.put(num, 0);
             }
 
             if (valid) {
                 RoundRobin rr = new RoundRobin(rosterID, roster.length);
                 Queue<Integer> queueOfPlayers = rr.createGames();
-                System.out.println(queueOfPlayers);
+                // System.out.println(queueOfPlayers);
                 createTournament.setVisible(false);
                 mainMenu.setVisible(true);
                 listOfPlayers.setText("List of players");
+
+                int playerOne;
+                int playerTwo;
+                int[] games = new int[queueOfPlayers.size() / 2];
+                counter = 0;
+
+                while (queueOfPlayers.size() > 1) {
+                    playerOne = queueOfPlayers.poll();
+                    playerTwo = queueOfPlayers.poll();
+                    ConnectFour game = new ConnectFour(playerOne, playerTwo, rr.tourneyID);
+                    games[counter++] = Games.gameCounter + counter;
+                    game.frame.setVisible(true);
+                }
+
+                try {
+                    FileHandling file = new FileHandling();
+                    rr.games = games;
+                    file.updateTourneys(rr);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                Tournaments.repository.add(rr);
             }
         });
         createTournamentPanel.add(roundRobinButton);
@@ -578,6 +604,7 @@ public class GUI {
             int counter = 0;
             boolean valid = true;
             int tempID;
+            if (roster.length < 2) {valid = false;}
             for (String s : roster) {
                 try {
                     tempID = Integer.parseInt(s);
@@ -602,12 +629,44 @@ public class GUI {
                 SingleElim se = new SingleElim(rosterID, roster.length);
                 Queue<Integer> queueOfPlayers = se.createGames();
                 System.out.println(queueOfPlayers);
+                int playerOne;
+                int playerTwo;
+
                 createTournament.setVisible(false);
                 mainMenu.setVisible(true);
                 listOfPlayers.setText("List of players");
+
+                while (queueOfPlayers.size() > 1) {
+                    playerOne = queueOfPlayers.poll();
+                    playerTwo = queueOfPlayers.poll();
+                    ConnectFour game = new ConnectFour(playerOne, playerTwo, se.tourneyID);
+                    game.frame.setVisible(true);
+
+                    if (game.outcome == 0) {
+                        queueOfPlayers.add(playerOne);
+                        queueOfPlayers.add(playerTwo);
+                    } else if (game.outcome == 2) {
+                        queueOfPlayers.add(playerOne);
+                    } else {
+                        queueOfPlayers.add(playerTwo);
+                    }
+
+                }
+                // se.winner = queueOfPlayers.poll();
+
+                try {
+                    FileHandling file = new FileHandling();
+                    file.updateTourneys(se);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                Tournaments.repository.add(se);
+
+
             }
         });
-        createTournamentPanel.add(elimButton);
+        // createTournamentPanel.add(elimButton);
 
         JButton createTournamentBackButton = new JButton("back");
         createTournamentBackButton.addActionListener(e -> {

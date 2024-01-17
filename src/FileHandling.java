@@ -55,7 +55,7 @@ public class FileHandling {
         while ((line = gameReader.readLine()) != null) {
             values = line.split(",");
             String[] roster = values[0].split(" ");
-            int winner = Integer.parseInt(values[1]);
+            String[] games = values[1].split(" ");
 
             int[] rosterID = new int[roster.length];
             int counter = 0;
@@ -65,12 +65,27 @@ public class FileHandling {
                 rosterID[counter++] = tempID;
             }
 
-            Tournament tourney = new Tournament(rosterID, roster.length, winner);
+            int[] gamesID = new int[games.length];
+            counter = 0;
+            for (String s : games) {
+                tempID = Integer.parseInt(s);
+                gamesID[counter++] = tempID;
+            }
+
+            Tournament tourney = new Tournament(rosterID, roster.length, gamesID);
             // System.out.println(game);
             Tournaments.repository.add(tourney);
         }
 
         gameReader.close();
+    }
+
+    public void updateTourneys(Tournament tournament) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("src/Tournaments.csv", true));
+        writer.newLine();
+        writer.write(tournament.toString());
+        writer.flush();
+        writer.close();
     }
     public void updateMembers(String number, String replace) throws IOException {
         BufferedReader accountReader = new BufferedReader(new FileReader("src/Accounts.csv"));
@@ -87,9 +102,11 @@ public class FileHandling {
         accountReader.close();
         BufferedWriter accountWriter = new BufferedWriter(new FileWriter("src/Accounts.csv"));
 
-        for (String modifiedLine : lines) {
-            accountWriter.write(modifiedLine);
-            accountWriter.newLine();
+        for (int i = 0; i < lines.size(); i++) {
+            accountWriter.write(lines.get(i));
+            if (i < lines.size() - 1) {
+                accountWriter.write("\n");
+            }
         }
 
         accountWriter.flush();
