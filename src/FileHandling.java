@@ -27,7 +27,6 @@ public class FileHandling {
             // System.out.println(account.studentNumber);
             Accounts.accountRepository.put(studentNumber, account);
         }
-
         accountReader.close();
     }
     public void readGames() throws IOException {
@@ -40,36 +39,37 @@ public class FileHandling {
             int playerOne = Integer.parseInt(values[0]);
             int playerTwo = Integer.parseInt(values[1]);
             int outcome = Integer.parseInt(values[2]);
-            String moves = values[3];
-            int tourneyID = Integer.parseInt(values[4]);
+            int tourneyID = Integer.parseInt(values[3]);
 
-            Game game = new Game(playerOne, playerTwo, outcome, moves, tourneyID);
+            Game game = new Game(playerOne, playerTwo, outcome, tourneyID);
             // System.out.println(game);
             Games.repository.add(game);
         }
+        gameReader.close();
     }
 
     public void updateMembers(String number, String replace) throws IOException {
-        BufferedReader accountReader2 = new BufferedReader(new FileReader("src/Accounts.csv"));
-        BufferedWriter accountWriter2 = new BufferedWriter(new FileWriter("src/Accounts.csv"));
+        BufferedReader accountReader = new BufferedReader(new FileReader("src/Accounts.csv"));
         String line;
         List<String> lines = new ArrayList<>();
 
-        while ((line = accountReader2.readLine()) != null) {
+        while ((line = accountReader.readLine()) != null) {
             if (Objects.equals(line.split(",")[1], number)) {
                 line = replace;
             }
             lines.add(line);
         }
 
+        accountReader.close();
+        BufferedWriter accountWriter = new BufferedWriter(new FileWriter("src/Accounts.csv"));
+
         for (String modifiedLine : lines) {
-            System.out.println(modifiedLine);
-            accountWriter2.write(modifiedLine);
-            accountWriter2.newLine();
+            accountWriter.write(modifiedLine);
+            accountWriter.newLine();
         }
 
-        accountReader2.close();
-        accountWriter2.close();
+        accountWriter.flush();
+        accountWriter.close();
     }
 
 

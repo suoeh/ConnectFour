@@ -43,6 +43,19 @@ public class Account {
     // setters
     public void changeName(String newName) {name = newName;}
     public void changePassword(String newPassword) {password = newPassword;}
-    public void changeRating(int change) {rating += change;}
+    public void addWin() {
+        wins += 1;
+        changeRating(10 - 5 * ((rating / 100) - 18));
+    }
+    public void addLoss() {
+        losses += 1;
+        changeRating(-(10 - 5 * ((-rating / 100) + 2)));
+    }
+    public void addTie() {ties += 1;}
+    public void changeRating(int change) {
+        rating += change;
+        rating = Math.min(rating, 2000);
+        rating = Math.max(rating, 0);
+    }
 
 }

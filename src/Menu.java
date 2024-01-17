@@ -29,14 +29,7 @@ public class Menu {
         Accounts.accountRepository.put(number, account);
         writer.newLine();
         writer.write(name + "," + studentNumber + "," + password + ",0,0,0,1000");
+        writer.flush();
         writer.close();
-    }
-
-    public void login(int studentNumber, String password) {
-        if (Accounts.accountRepository.get(studentNumber) == null) {return;}
-        if (Objects.equals(password, Accounts.accountRepository.get(studentNumber).getPassword())){
-            HomeScreen homeScreen = new HomeScreen(studentNumber);
-            homeScreen.homeScreen();
-        }
     }
 }

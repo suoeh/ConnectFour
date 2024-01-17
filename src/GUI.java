@@ -1,14 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.IOException;
 import java.util.Objects;
 
 public class GUI {
     int mode = -1;
     public GUI() {
-
-
+        // main menu
         JFrame accountMenu = new JFrame("Connect 4!");
         JFrame signIn = new JFrame("Sign in");
         JFrame mainMenu = new JFrame("Welcome :D");
@@ -133,10 +131,10 @@ public class GUI {
         editUserData.setSize(800, 600);
         editUserData.setLocationRelativeTo(null);
 
-        JFrame changePassword = new JFrame("Change password");
-        changePassword.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        changePassword.setSize(800, 600);
-        changePassword.setLocationRelativeTo(null);
+        JFrame changeOwnPassword = new JFrame("Change password");
+        changeOwnPassword.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        changeOwnPassword.setSize(800, 600);
+        changeOwnPassword.setLocationRelativeTo(null);
 
         JFrame logOut = new JFrame("Log out");
         logOut.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -148,7 +146,7 @@ public class GUI {
         JButton mainMenuViewStatsButton = new JButton("View Stats");
         JButton mainMenuCreateTournamentButton = new JButton("Create Tournament");
         JButton mainMenuEditUserDataButton = new JButton("Edit User Data");
-        JButton mainMenuChangePasswordButton = new JButton("Change Password");
+        JButton mainMenuChangeOwnPasswordButton = new JButton("Change Password");
         JButton mainMenuLogOutButton = new JButton("Log Out");
 
         mainMenuPanel.add(mainMenuHowToPlayButton);
@@ -156,7 +154,7 @@ public class GUI {
         mainMenuPanel.add(mainMenuViewStatsButton);
         mainMenuPanel.add(mainMenuCreateTournamentButton);
         mainMenuPanel.add(mainMenuEditUserDataButton);
-        mainMenuPanel.add(mainMenuChangePasswordButton);
+        mainMenuPanel.add(mainMenuChangeOwnPasswordButton);
         mainMenuPanel.add(mainMenuLogOutButton);
 
         // Adding buttons
@@ -189,9 +187,9 @@ public class GUI {
             }
         });
 
-        mainMenuChangePasswordButton.addActionListener(e -> {
+        mainMenuChangeOwnPasswordButton.addActionListener(e -> {
             mainMenu.setVisible(false);
-            changePassword.setVisible(true);
+            changeOwnPassword.setVisible(true);
         });
 
         mainMenuLogOutButton.addActionListener(e -> {
@@ -205,7 +203,7 @@ public class GUI {
         JPanel viewStatsPanel = new JPanel();
         JPanel createTournamentPanel = new JPanel();
         JPanel editUserDataPanel = new JPanel();
-        JPanel changePasswordPanel = new JPanel();
+        JPanel changeOwnPasswordPanel = new JPanel();
         JPanel logOutPanel = new JPanel();
 
         howToPlay.add(howToPlayPanel);
@@ -213,19 +211,19 @@ public class GUI {
         viewStats.add(viewStatsPanel);
         createTournament.add(createTournamentPanel);
         editUserData.add(editUserDataPanel);
-        changePassword.add(changePasswordPanel);
+        changeOwnPassword.add(changeOwnPasswordPanel);
         logOut.add(logOutPanel);
+
         // Back button in how to play
         JButton howToPlayBackButton = new JButton("back");
         howToPlayBackButton.addActionListener(e -> {
             howToPlay.setVisible(false);
             mainMenu.setVisible(true);
         });
-
         howToPlayPanel.add(howToPlayBackButton);
 
         // Text for opponent ID
-        JTextField playAgainstOpponentID = new JTextField("Opponent ID: ");
+        JTextField playAgainstOpponentID = new JTextField("Opponent ID: ", 20);
         playAgainstOpponentPanel.add(playAgainstOpponentID);
         // Back button for play against opponent panel
         JButton playAgainstOpponentBackButton = new JButton("back");
@@ -237,14 +235,43 @@ public class GUI {
         
         JButton playAgainstOpponentStartButton = new JButton("Start game");
         playAgainstOpponentStartButton.addActionListener(e -> {
-            // Create an instance of connectFour and set it visible
-            ConnectFour game = new ConnectFour();
-            game.frame.setVisible(true);
-            // Hide the current mainMenu frame
-            playAgainstOpponent.setVisible(false);
-            mainMenu.setVisible(true);
+            String input = playAgainstOpponentID.getText();
+            try {
+                int number = Integer.parseInt(input);
+                if (Accounts.accountRepository.get(number) != null && number != mode) {
+                    // Create an instance of connectFour and set it visible
+                    // ConnectFour game = new ConnectFour(mode, number, -1);
+                    ConnectFour game = new ConnectFour(mode, number, -1);
+                    game.frame.setVisible(true);
+                    // Hide the current mainMenu frame
+                    playAgainstOpponent.setVisible(false);
+                    mainMenu.setVisible(true);
+                }
+            } catch (NumberFormatException ignored) {}
+
         });
         playAgainstOpponentPanel.add(playAgainstOpponentStartButton);
+
+
+        JFrame viewPlayers = new JFrame("View Players");
+        viewPlayers.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        viewPlayers.setSize(800, 600);
+        viewPlayers.setLocationRelativeTo(null);
+
+        JFrame viewGames = new JFrame("View Games");
+        viewGames.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        viewGames.setSize(800, 600);
+        viewGames.setLocationRelativeTo(null);
+
+        JFrame viewTourneys = new JFrame("View Games");
+        viewTourneys.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        viewTourneys.setSize(800, 600);
+        viewTourneys.setLocationRelativeTo(null);
+
+        JPanel viewPlayersPanel = new JPanel();
+        JPanel viewGamesPanel = new JPanel();
+        JPanel viewTourneysPanel = new JPanel();
+
         // View players button
         JButton viewPlayersButton = new JButton("View players");
         viewPlayersButton.addActionListener(e -> {
@@ -269,6 +296,66 @@ public class GUI {
         });
         viewStatsPanel.add(viewTournamentsButton);
 
+        // Back buttons for stats, tourney, user data & password
+        JButton viewStatsBackButton = new JButton("back");
+        viewStatsBackButton.addActionListener(e -> {
+            viewStats.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        viewStatsPanel.add(viewStatsBackButton);
+
+        // rules
+        JTextArea rulesArea = new JTextArea(
+                "Connect Four is played with two people. In turns, each player (red and green) places a block in the grid. " +
+                        "When one player gets four blocks in a row, either vertically or diagonally, they win. " + "The red player always goes first, and the user signed in is red.");
+        rulesArea.setLineWrap(true);
+        rulesArea.setWrapStyleWord(true);
+        rulesArea.setEditable(false);
+
+        JScrollPane rulesScrollPane = new JScrollPane(rulesArea);
+        rulesScrollPane.setPreferredSize(new Dimension(600, 200));
+
+        howToPlayPanel.add(rulesScrollPane);
+
+
+        // Change password textbox
+        JTextField changingOwnPasswordField = new JTextField("New Password:", 20);
+        changeOwnPasswordPanel.add(changingOwnPasswordField);
+
+        JButton changeOwnPasswordBackButton = new JButton("back");
+        changeOwnPasswordBackButton.addActionListener(e -> {
+            changingOwnPasswordField.setText("New Password:");
+            changeOwnPassword.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        changeOwnPasswordPanel.add(changeOwnPasswordBackButton);
+
+        // confirm password change
+        JButton changeOwnPasswordConfirmButton = new JButton("Confirm");
+        changeOwnPasswordConfirmButton.addActionListener(e -> {
+            if (!Objects.equals(changingOwnPasswordField.getText(), "") && Objects.equals(changingOwnPasswordField.getText(), changingOwnPasswordField.getText().replaceAll("[^a-zA-Z\\s]", ""))) {
+                Accounts.accountRepository.get(mode).changePassword(changingOwnPasswordField.getText());
+                changingOwnPasswordField.setText("New Password");
+                String tempString = Accounts.accountRepository.get(mode).toString();
+
+                try {
+                    FileHandling file = new FileHandling();
+                    file.updateMembers(String.valueOf(mode), tempString);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                changeOwnPassword.setVisible(false);
+                mainMenu.setVisible(true);
+            }
+        });
+        changeOwnPasswordPanel.add(changeOwnPasswordConfirmButton);
+
+
+
+
+
+        // tourney menu
         // Round Robin Button
         JButton roundRobinButton = new JButton("Round Robin");
         roundRobinButton.addActionListener(e -> {
@@ -281,7 +368,7 @@ public class GUI {
         createTournamentPanel.add(createTournamentRoster);
 
         // List of players
-        JTextField listOfPlayers = new JTextField("List of players");
+        JTextField listOfPlayers = new JTextField("List of players", 100);
         createTournamentPanel.add(listOfPlayers);
         // Start button
         JButton Start = new JButton("Start");
@@ -290,17 +377,6 @@ public class GUI {
             mainMenu.setVisible(true);
         });
         createTournamentPanel.add(Start);
-        // Change password textbox
-        JTextField changingPasswordField = new JTextField("New Password");
-        changePasswordPanel.add(changingPasswordField);
-
-        // Back buttons for stats, tourney, user data & password
-        JButton viewStatsBackButton = new JButton("back");
-        viewStatsBackButton.addActionListener(e -> {
-            viewStats.setVisible(false);
-            mainMenu.setVisible(true);
-        });
-        viewStatsPanel.add(viewStatsBackButton);
 
         JButton createTournamentBackButton = new JButton("back");
         createTournamentBackButton.addActionListener(e -> {
@@ -308,53 +384,117 @@ public class GUI {
         });
         createTournamentPanel.add(createTournamentBackButton);
 
+
+
+
+        // edit user data !
+        JFrame modifyUser = new JFrame("Pick student ID");
+        modifyUser.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        modifyUser.setSize(800, 600);
+        modifyUser.setLocationRelativeTo(null);
+
+        JPanel modifyUserPanel = new JPanel();
+        modifyUser.add(modifyUserPanel);
+
+        // Edit user data selection
+        JTextField pickStudentField = new JTextField("Which student ID would you like to edit?", 30);
+        editUserDataPanel.add(pickStudentField);
+
         JButton editUserDataBackButton = new JButton("back");
         editUserDataBackButton.addActionListener(e -> {
+            editUserData.setVisible(false);
+            pickStudentField.setText("Which student ID would you like to edit?");
             mainMenu.setVisible(true);
         });
         editUserDataPanel.add(editUserDataBackButton);
 
-        JTextField newPassword = new JTextField("Type in your new password here!!!!");
-        editUserDataPanel.add(newPassword);
 
-        JButton changePasswordBackButton = new JButton("back");
-        changePasswordBackButton.addActionListener(e -> {
-            changingPasswordField.setText("New password");
-            changePassword.setVisible(false);
-            mainMenu.setVisible(true);
+        // place to modify user
+        JTextField newName = new JTextField("name", 20);
+        modifyUserPanel.add(newName);
+
+        JTextField newPassword = new JTextField("password", 20);
+        modifyUserPanel.add(newPassword);
+
+        JTextField newWins = new JTextField("wins");
+        modifyUserPanel.add(newWins);
+
+        JTextField newLosses = new JTextField("losses");
+        modifyUserPanel.add(newLosses);
+
+        JTextField newTies = new JTextField("ties");
+        modifyUserPanel.add(newTies);
+
+        JTextField newRating = new JTextField("elo", 5);
+        modifyUserPanel.add(newRating);
+
+
+
+        // find user to modify, admin panel
+        JButton pickStudentButton = new JButton("Confirm");
+        pickStudentButton.addActionListener(e -> {
+            String input = pickStudentField.getText();
+            try {
+                int number = Integer.parseInt(input);
+                if (Accounts.accountRepository.get(number) != null) {
+                    Account tempAccount = Accounts.accountRepository.get(number);
+                    newName.setText(tempAccount.name);
+                    newPassword.setText(tempAccount.getPassword());
+                    newWins.setText(String.valueOf(tempAccount.wins));
+                    newLosses.setText(String.valueOf(tempAccount.losses));
+                    newTies.setText(String.valueOf(tempAccount.ties));
+                    newRating.setText(String.valueOf(tempAccount.rating));
+
+                    editUserData.setVisible(false);
+                    modifyUser.setVisible(true);
+                }
+            } catch (NumberFormatException ignored) {}
         });
-        changePasswordPanel.add(changePasswordBackButton);
+        editUserDataPanel.add(pickStudentButton);
 
-        JTextArea rulesArea = new JTextArea(
-                "Connect Four is played with two people. In turns, each player (red and green) places a block in the grid. " +
-                        "When one player gets four blocks in a row, either vertically or diagonally, they win.");
-        rulesArea.setLineWrap(true);
-        rulesArea.setWrapStyleWord(true);
-        rulesArea.setEditable(false);
+        JButton modifyUserConfirmButton = new JButton("Confirm account changes");
+        modifyUserConfirmButton.addActionListener(e -> {
+            try {
+                Account tempAccount = Accounts.accountRepository.get(Integer.parseInt(pickStudentField.getText()));
+                int wins = Integer.parseInt(newWins.getText());
+                int losses = Integer.parseInt(newLosses.getText());
+                int ties = Integer.parseInt(newTies.getText());
+                int rating = Integer.parseInt(newRating.getText());
 
-        JScrollPane rulesScrollPane = new JScrollPane(rulesArea);
-        rulesScrollPane.setPreferredSize(new Dimension(600, 200));
+                if (Objects.equals(newName.getText(), newName.getText().replaceAll("[^a-zA-Z\\s]", ""))) {
+                    tempAccount.changeName(newName.getText());
+                }
 
-        howToPlayPanel.add(rulesScrollPane);
+                if (Objects.equals(newPassword.getText(), newPassword.getText().replaceAll("[^a-zA-Z\\s]", ""))) {
+                    tempAccount.changePassword(newPassword.getText());
+                }
 
-        JButton changePasswordConfirmButton = new JButton("Confirm");
-        changePasswordConfirmButton.addActionListener(e -> {
-            if (!Objects.equals(changingPasswordField.getText(), "") && Objects.equals(changingPasswordField.getText(), changingPasswordField.getText().replaceAll("[^a-zA-Z\\s]", ""))) {
-                Accounts.accountRepository.get(mode).changePassword(changingPasswordField.getText());
-                changingPasswordField.setText("New password");
-                String tempString = Accounts.accountRepository.get(mode).toString();
+                tempAccount.wins = wins;
+                tempAccount.losses = losses;
+                tempAccount.ties = ties;
+                tempAccount.rating = rating;
+
+
+                String tempString = tempAccount.toString();
 
                 try {
-                    FileHandling.updateMembers(String.valueOf(mode), tempString);
+                    FileHandling file = new FileHandling();
+                    file.updateMembers(pickStudentField.getText(), tempString);
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
 
-                changePassword.setVisible(false);
+                modifyUser.setVisible(false);
+                pickStudentField.setText("Which student ID would you like to edit?");
                 mainMenu.setVisible(true);
-            }
+
+            } catch (NumberFormatException ignored) {}
+
         });
-        changePasswordPanel.add(changePasswordConfirmButton);
+        modifyUserPanel.add(modifyUserConfirmButton);
+
+        JLabel newUserContext = new JLabel("The details are as follows: Name, password, wins, losses, ties, elo.");
+        modifyUserPanel.add(newUserContext);
 
         accountMenu.setVisible(true);
     }
