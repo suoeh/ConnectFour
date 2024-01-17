@@ -279,14 +279,13 @@ public class GUI {
         viewTourneys.add(viewTourneysPanel);
 
         String[] playerColumns = {"Name", "Student ID", "Wins", "Losses", "Ties", "Rating"};
-        Object[][] playerData = new Object[30][6];
+        Object[][] playerData = new Object[Accounts.accountRepository.size() + 50][6];
 
         // View players button
         JButton viewPlayersButton = new JButton("View players");
         viewPlayersButton.addActionListener(e -> {
             ArrayList<Account> tempList = new ArrayList<>(Accounts.accountRepository.values());
             tempList.sort(Comparator.comparing(o -> o.name));
-            System.out.println(tempList);
             playerData[0][0] = tempList.get(Accounts.accountRepository.size() - 1).name;
             playerData[0][1] = tempList.get(Accounts.accountRepository.size() - 1).studentNumber;
             playerData[0][2] = tempList.get(Accounts.accountRepository.size() - 1).wins;
@@ -307,27 +306,27 @@ public class GUI {
         });
         viewStatsPanel.add(viewPlayersButton);
 
-        JTable table = new JTable(playerData, playerColumns);
-        JScrollPane scrollPane = new JScrollPane(table);
-        viewPlayersPanel.add(scrollPane);
+        JTable playerTable = new JTable(playerData, playerColumns);
+        JScrollPane playerScrollPane = new JScrollPane(playerTable);
+        viewPlayersPanel.add(playerScrollPane);
 
         JButton sortByNameButton = new JButton("Sort Alphabetically");
         sortByNameButton.addActionListener(e -> {
             ArrayList<Account> tempList = new ArrayList<>(Accounts.accountRepository.values());
             tempList.sort(Comparator.comparing(o -> o.name));
-            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).name, 0, 0);
-            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).studentNumber, 0, 1);
-            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).wins, 0, 2);
-            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).losses, 0, 3);
-            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).ties, 0, 4);
-            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).rating, 0, 5);
+            playerTable.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).name, 0, 0);
+            playerTable.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).studentNumber, 0, 1);
+            playerTable.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).wins, 0, 2);
+            playerTable.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).losses, 0, 3);
+            playerTable.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).ties, 0, 4);
+            playerTable.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).rating, 0, 5);
             for (int i = Accounts.accountRepository.size() - 2; i >= 0; i--) {
-                table.getModel().setValueAt(tempList.get(i).name,i + 1, 0);
-                table.getModel().setValueAt(tempList.get(i).studentNumber, i + 1, 1);
-                table.getModel().setValueAt(tempList.get(i).wins, i + 1, 2);
-                table.getModel().setValueAt(tempList.get(i).losses,i + 1, 3);
-                table.getModel().setValueAt(tempList.get(i).ties, i + 1, 4);
-                table.getModel().setValueAt(tempList.get(i).rating, i + 1, 5);
+                playerTable.getModel().setValueAt(tempList.get(i).name,i + 1, 0);
+                playerTable.getModel().setValueAt(tempList.get(i).studentNumber, i + 1, 1);
+                playerTable.getModel().setValueAt(tempList.get(i).wins, i + 1, 2);
+                playerTable.getModel().setValueAt(tempList.get(i).losses,i + 1, 3);
+                playerTable.getModel().setValueAt(tempList.get(i).ties, i + 1, 4);
+                playerTable.getModel().setValueAt(tempList.get(i).rating, i + 1, 5);
             }
         });
         viewPlayersPanel.add(sortByNameButton);
@@ -338,12 +337,12 @@ public class GUI {
             int size = Accounts.accountRepository.size();
             tempList.sort(Comparator.comparing(o -> o.wins));
             for (int i = 0; i < Accounts.accountRepository.size(); i++) {
-                table.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
-                table.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
-                table.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
-                table.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
-                table.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
-                table.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
             }
         });
         viewPlayersPanel.add(sortByWinsButton);
@@ -354,12 +353,12 @@ public class GUI {
             int size = Accounts.accountRepository.size();
             tempList.sort(Comparator.comparing(o -> o.losses));
             for (int i = 0; i < Accounts.accountRepository.size(); i++) {
-                table.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
-                table.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
-                table.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
-                table.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
-                table.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
-                table.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
             }
         });
         viewPlayersPanel.add(sortByLossesButton);
@@ -370,12 +369,12 @@ public class GUI {
             int size = Accounts.accountRepository.size();
             tempList.sort(Comparator.comparing(o -> o.ties));
             for (int i = 0; i < Accounts.accountRepository.size(); i++) {
-                table.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
-                table.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
-                table.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
-                table.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
-                table.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
-                table.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
             }
         });
         viewPlayersPanel.add(sortByTiesButton);
@@ -386,19 +385,37 @@ public class GUI {
             int size = Accounts.accountRepository.size();
             tempList.sort(Comparator.comparing(o -> o.rating));
             for (int i = 0; i < Accounts.accountRepository.size(); i++) {
-                table.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
-                table.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
-                table.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
-                table.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
-                table.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
-                table.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
+                playerTable.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
             }
         });
         viewPlayersPanel.add(sortByRatingButton);
 
+        String[] gameColumns = {"Game ID", "Player 1", "Player 2", "Result", "Tourney ID"};
+        Object[][] gameData = new Object[Games.gameCounter + 100][5];
+
+        JTable gameTable = new JTable(gameData, gameColumns);
+        JScrollPane gameScrollPane = new JScrollPane(gameTable);
+        viewGamesPanel.add(gameScrollPane);
+
         // View games button
         JButton viewGamesButton = new JButton("View games");
         viewGamesButton.addActionListener(e -> {
+            System.out.println(Games.gameCounter);
+            ArrayList<Game> tempList = Games.repository;
+            int size = tempList.size();
+            for (int i = 0; i < size; i++) {
+                gameTable.getModel().setValueAt(i + 1,i, 0);
+                gameTable.getModel().setValueAt(tempList.get(i).playerOne, i, 1);
+                gameTable.getModel().setValueAt(tempList.get(i).playerTwo, i, 2);
+                gameTable.getModel().setValueAt(tempList.get(i).outcome,i, 3);
+                gameTable.getModel().setValueAt(tempList.get(i).tourneyID, i, 4);
+            }
+
             viewStats.setVisible(false);
             viewGames.setVisible(true);
         });
@@ -455,7 +472,7 @@ public class GUI {
         howToPlayPanel.add(rulesScrollPane);
 
 
-        // Change password textbox
+        // Change password text box
         JTextField changingOwnPasswordField = new JTextField("New Password:", 20);
         changeOwnPasswordPanel.add(changingOwnPasswordField);
 

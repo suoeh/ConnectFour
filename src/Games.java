@@ -12,6 +12,10 @@ public class Games {
     }
     static int gameCounter = 0;
 
+    public ArrayList<Game> returnGames() {
+        return repository;
+    }
+
     public static void uploadGame(Game game) throws IOException {
         repository.add(game);
         BufferedWriter writer = new BufferedWriter(new FileWriter("src/Games.csv", true));
