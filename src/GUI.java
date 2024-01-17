@@ -1,9 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 
 public class GUI {
     int mode = -1;
@@ -44,10 +42,10 @@ public class GUI {
             Menu menu = new Menu();
             if (menu.validateNumber(signInText2.getText()) || menu.validateString(signInText3.getText())) {
                 signInErrorLabel.setText("Invalid password/student number");
-            } else if (!Objects.equals(signInText3.getText(), Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())).getPassword())) {
-                signInErrorLabel.setText("Wrong password!");
             } else if (Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())) == null) {
                 signInErrorLabel.setText("Student ID doesn't exist");
+            } else if (!Objects.equals(signInText3.getText(), Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())).getPassword())) {
+                signInErrorLabel.setText("Wrong password!");
             } else {
                 mode = Integer.parseInt(signInText2.getText());
                 signIn.setVisible(false);
@@ -405,7 +403,6 @@ public class GUI {
         // View games button
         JButton viewGamesButton = new JButton("View games");
         viewGamesButton.addActionListener(e -> {
-            System.out.println(Games.gameCounter);
             ArrayList<Game> tempList = Games.repository;
             int size = tempList.size();
             for (int i = 0; i < size; i++) {
@@ -421,9 +418,24 @@ public class GUI {
         });
         viewStatsPanel.add(viewGamesButton);
 
+        String[] tourneyColumns = {"Roster", "Winner"};
+        Object[][] tourneyData = new Object[Tournaments.tourneyCounter + 100][2];
+
+        JTable tourneyTable = new JTable(tourneyData, tourneyColumns);
+        JScrollPane tourneyScrollPane = new JScrollPane(tourneyTable);
+        viewTourneysPanel.add(tourneyScrollPane);
+
         // View Tournaments Button
         JButton viewTournamentsButton = new JButton("View tournaments");
         viewTournamentsButton.addActionListener(e -> {
+            ArrayList<Tournament> tempList = Tournaments.repository;
+            int size = tempList.size();
+            for (int i = 0; i < size; i++) {
+                int[] tempRoster = tempList.get(i).roster;
+                String stringedRoster = Arrays.toString(tempRoster).replace(",", "");
+                tourneyTable.getModel().setValueAt(stringedRoster,i, 0);
+                tourneyTable.getModel().setValueAt(tempList.get(i).winner, i, 1);
+            }
             viewStats.setVisible(false);
             viewTourneys.setVisible(true);
         });
@@ -510,30 +522,95 @@ public class GUI {
 
 
         // tourney menu
-        // Round Robin Button
-        JButton roundRobinButton = new JButton("Round Robin");
-        roundRobinButton.addActionListener(e -> {
-            createTournament.setVisible(false);
-            mainMenu.setVisible(true);
-        });
-        createTournamentPanel.add(roundRobinButton);
+
         // Player count button
         JLabel createTournamentRoster = new JLabel("Players:");
         createTournamentPanel.add(createTournamentRoster);
 
         // List of players
-        JTextField listOfPlayers = new JTextField("List of players", 100);
+        JTextField listOfPlayers = new JTextField("List of players", 50);
         createTournamentPanel.add(listOfPlayers);
-        // Start button
-        JButton Start = new JButton("Start");
-        Start.addActionListener(e -> {
-            Start.setVisible(false);
-            mainMenu.setVisible(true);
+
+        // Round Robin Button
+        JButton roundRobinButton = new JButton("Round Robin");
+        roundRobinButton.addActionListener(e -> {
+            String[] roster = listOfPlayers.getText().split(" ");
+            int[] rosterID = new int[roster.length];
+            int counter = 0;
+            boolean valid = true;
+            int tempID;
+            for (String s : roster) {
+                try {
+                    tempID = Integer.parseInt(s);
+                    if (Accounts.accountRepository.get(tempID) == null) {
+                        valid = false;
+                    }
+                    rosterID[counter++] = tempID;
+                } catch (Exception ex) {
+                    valid = false;
+                }
+            }
+
+            Set<Integer> set = new HashSet<>();
+            for (int num : rosterID) {
+                if (set.contains(num)) {
+                    valid = false;
+                }
+                set.add(num);
+            }
+
+            if (valid) {
+                RoundRobin rr = new RoundRobin(rosterID, roster.length);
+                Queue<Integer> queueOfPlayers = rr.createGames();
+                System.out.println(queueOfPlayers);
+                createTournament.setVisible(false);
+                mainMenu.setVisible(true);
+                listOfPlayers.setText("List of players");
+            }
         });
-        createTournamentPanel.add(Start);
+        createTournamentPanel.add(roundRobinButton);
+
+        JButton elimButton = new JButton("Single Elimination");
+        elimButton.addActionListener(e -> {
+            String[] roster = listOfPlayers.getText().split(" ");
+            int[] rosterID = new int[roster.length];
+            int counter = 0;
+            boolean valid = true;
+            int tempID;
+            for (String s : roster) {
+                try {
+                    tempID = Integer.parseInt(s);
+                    if (Accounts.accountRepository.get(tempID) == null) {
+                        valid = false;
+                    }
+                    rosterID[counter++] = tempID;
+                } catch (Exception ex) {
+                    valid = false;
+                }
+            }
+
+            Set<Integer> set = new HashSet<>();
+            for (int num : rosterID) {
+                if (set.contains(num)) {
+                    valid = false;
+                }
+                set.add(num);
+            }
+
+            if (valid) {
+                SingleElim se = new SingleElim(rosterID, roster.length);
+                Queue<Integer> queueOfPlayers = se.createGames();
+                System.out.println(queueOfPlayers);
+                createTournament.setVisible(false);
+                mainMenu.setVisible(true);
+                listOfPlayers.setText("List of players");
+            }
+        });
+        createTournamentPanel.add(elimButton);
 
         JButton createTournamentBackButton = new JButton("back");
         createTournamentBackButton.addActionListener(e -> {
+            createTournament.setVisible(false);
             mainMenu.setVisible(true);
         });
         createTournamentPanel.add(createTournamentBackButton);

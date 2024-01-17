@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,6 +47,31 @@ public class FileHandling {
         gameReader.close();
     }
 
+    public void readTourneys() throws IOException {
+        BufferedReader gameReader = new BufferedReader(new FileReader("src/Tournaments.csv"));
+        String line;
+        String[] values;
+
+        while ((line = gameReader.readLine()) != null) {
+            values = line.split(",");
+            String[] roster = values[0].split(" ");
+            int winner = Integer.parseInt(values[1]);
+
+            int[] rosterID = new int[roster.length];
+            int counter = 0;
+            int tempID;
+            for (String s : roster) {
+                tempID = Integer.parseInt(s);
+                rosterID[counter++] = tempID;
+            }
+
+            Tournament tourney = new Tournament(rosterID, roster.length);
+            // System.out.println(game);
+            Tournaments.repository.add(tourney);
+        }
+
+        gameReader.close();
+    }
     public void updateMembers(String number, String replace) throws IOException {
         BufferedReader accountReader = new BufferedReader(new FileReader("src/Accounts.csv"));
         String line;

@@ -27,8 +27,7 @@ public class Menu {
         int number = Integer.parseInt(studentNumber);
         Account account = new Account(name, number, password);
         Accounts.accountRepository.put(number, account);
-        writer.newLine();
-        writer.write(name + "," + studentNumber + "," + password + ",0,0,0,1000");
+        writer.write("\n" + name + "," + studentNumber + "," + password + ",0,0,0,1000");
         writer.flush();
         writer.close();
     }
