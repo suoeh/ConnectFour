@@ -35,6 +35,11 @@ public class Account {
     // getter
     public String getPassword() {return password;}
 
+    @Override
+    public String toString() {
+        return name + "," + studentNumber + "," + password + "," + wins + "," + losses + "," + ties + "," + rating;
+    }
+
     // setters
     public void changeName(String newName) {name = newName;}
     public void changePassword(String newPassword) {password = newPassword;}

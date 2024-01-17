@@ -7,10 +7,12 @@ public class Menu {
     public Menu() {}
 
     public boolean validateString(String string) {
-        return !Objects.equals(string, string.replaceAll("\\p{Punct}", ""));
+        if (Objects.equals(string, "")) {return true;}
+        return !Objects.equals(string, string.replaceAll("[^a-zA-Z\\s]", ""));
     }
 
     public boolean validateNumber(String string) {
+        if (Objects.equals(string, "")) {return true;}
         try {
             Integer.parseInt(string);
             return false;

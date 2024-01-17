@@ -1,12 +1,13 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.Objects;
 
 public class GUI {
-
+    int mode = -1;
     public GUI() {
-        int mode = -1;
+
 
         JFrame accountMenu = new JFrame("Connect 4!");
         JFrame signIn = new JFrame("Sign in");
@@ -25,72 +26,59 @@ public class GUI {
         JButton signInSignUpButton = new JButton("Sign up");
         JLabel signInErrorLabel = new JLabel("");
 
-        accountMenuSignInButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                accountMenu.setVisible(false);
-                signIn.setVisible(true);
-                signInErrorLabel.setText("");
-            }
+        accountMenuSignInButton.addActionListener(e -> {
+            accountMenu.setVisible(false);
+            signIn.setVisible(true);
+            signInErrorLabel.setText("");
         });
 
-        signInBackButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        signInBackButton.addActionListener(e -> {
+            signIn.setVisible(false);
+            accountMenu.setVisible(true);
+            signInErrorLabel.setText("");
+            signInText1.setText("Name");
+            signInText2.setText("Student number");
+            signInText3.setText("Password");
+        });
+        signInLogInButton.addActionListener(e -> {
+            Menu menu = new Menu();
+            if (menu.validateNumber(signInText2.getText()) || menu.validateString(signInText3.getText())) {
+                signInErrorLabel.setText("Invalid password/student number");
+            } else if (!Objects.equals(signInText3.getText(), Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())).getPassword())) {
+                signInErrorLabel.setText("Wrong password!");
+            } else if (Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())) == null) {
+                signInErrorLabel.setText("Student ID doesn't exist");
+            } else {
+                mode = Integer.parseInt(signInText2.getText());
                 signIn.setVisible(false);
-                accountMenu.setVisible(true);
+                mainMenu.setTitle("Welcome " + Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())).name);
+                mainMenu.setVisible(true);
                 signInErrorLabel.setText("");
                 signInText1.setText("Name");
                 signInText2.setText("Student number");
                 signInText3.setText("Password");
             }
         });
-        signInLogInButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Menu menu = new Menu();
-                if (menu.validateNumber(signInText2.getText()) || menu.validateString(signInText3.getText())) {
-                    signInErrorLabel.setText("Invalid password/student number");
-                } else if (!Objects.equals(signInText3.getText(), Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())).getPassword())) {
-                    signInErrorLabel.setText("Wrong password!");
-                } else if (Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())) == null) {
-                    signInErrorLabel.setText("Student ID doesn't exist");
-                } else {
-                    try {
-                        menu.createAccount(signInText1.getText(),signInText2.getText(),signInText3.getText());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-
-                    signIn.setVisible(false);
-                    mainMenu.setTitle("Welcome " + signInText1.getText());
-                    mainMenu.setVisible(true);
-                    signInErrorLabel.setText("");
-                    signInText1.setText("Name");
-                    signInText2.setText("Student number");
-                    signInText3.setText("Password");
-                };
-            }
-        });
-        signInSignUpButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Menu menu = new Menu();
-                if (menu.validateString(signInText1.getText()) || menu.validateNumber(signInText2.getText()) || menu.validateString(signInText3.getText())) {
-                    signInErrorLabel.setText("Invalid name/password/student number");
-                } else if (Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())) != null) {
-                    signInErrorLabel.setText("Student ID is already taken");
-                } else {
-                    try {
-                        menu.createAccount(signInText1.getText(),signInText2.getText(),signInText3.getText());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-
-                    signIn.setVisible(false);
-                    mainMenu.setTitle("Welcome " + signInText1.getText());
-                    mainMenu.setVisible(true);
-                    signInErrorLabel.setText("");
-                    signInText1.setText("Name");
-                    signInText2.setText("Student number");
-                    signInText3.setText("Password");
-                };
+        signInSignUpButton.addActionListener(e -> {
+            Menu menu = new Menu();
+            if (menu.validateString(signInText1.getText()) || menu.validateNumber(signInText2.getText()) || menu.validateString(signInText3.getText())) {
+                signInErrorLabel.setText("Invalid name/password/student number");
+            } else if (Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())) != null) {
+                signInErrorLabel.setText("Student ID is already taken");
+            } else {
+                try {
+                    menu.createAccount(signInText1.getText(),signInText2.getText(),signInText3.getText());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                mode = Integer.parseInt(signInText2.getText());
+                signIn.setVisible(false);
+                mainMenu.setTitle("Welcome " + Accounts.accountRepository.get(Integer.parseInt(signInText2.getText())).name);
+                mainMenu.setVisible(true);
+                signInErrorLabel.setText("");
+                signInText1.setText("Name");
+                signInText2.setText("Student number");
+                signInText3.setText("Password");
             }
         });
 
@@ -188,13 +176,17 @@ public class GUI {
         });
 
         mainMenuCreateTournamentButton.addActionListener(e -> {
-            mainMenu.setVisible(false);
-            createTournament.setVisible(true);
+            if (mode == 0) {
+                mainMenu.setVisible(false);
+                createTournament.setVisible(true);
+            }
         });
 
         mainMenuEditUserDataButton.addActionListener(e -> {
-            mainMenu.setVisible(false);
-            editUserData.setVisible(true);
+            if (mode == 0) {
+                mainMenu.setVisible(false);
+                editUserData.setVisible(true);
+            }
         });
 
         mainMenuChangePasswordButton.addActionListener(e -> {
@@ -203,6 +195,7 @@ public class GUI {
         });
 
         mainMenuLogOutButton.addActionListener(e -> {
+            mode = -1;
             mainMenu.setVisible(false);
             accountMenu.setVisible(true);
         });
@@ -222,8 +215,147 @@ public class GUI {
         editUserData.add(editUserDataPanel);
         changePassword.add(changePasswordPanel);
         logOut.add(logOutPanel);
+        // Back button in how to play
+        JButton howToPlayBackButton = new JButton("back");
+        howToPlayBackButton.addActionListener(e -> {
+            howToPlay.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+
+        howToPlayPanel.add(howToPlayBackButton);
+
+        // Text for opponent ID
+        JTextField playAgainstOpponentID = new JTextField("Opponent ID: ");
+        playAgainstOpponentPanel.add(playAgainstOpponentID);
+        // Back button for play against opponent panel
+        JButton playAgainstOpponentBackButton = new JButton("back");
+        playAgainstOpponentBackButton.addActionListener(e -> {
+            playAgainstOpponent.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        playAgainstOpponentPanel.add(playAgainstOpponentBackButton);
+        
+        JButton playAgainstOpponentStartButton = new JButton("Start game");
+        playAgainstOpponentStartButton.addActionListener(e -> {
+            // Create an instance of connectFour and set it visible
+            ConnectFour game = new ConnectFour();
+            game.frame.setVisible(true);
+            // Hide the current mainMenu frame
+            playAgainstOpponent.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        playAgainstOpponentPanel.add(playAgainstOpponentStartButton);
+        // View players button
+        JButton viewPlayersButton = new JButton("View players");
+        viewPlayersButton.addActionListener(e -> {
+            viewStats.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        viewStatsPanel.add(viewPlayersButton);
+
+        // View games button
+        JButton viewGamesButton = new JButton("View games");
+        viewGamesButton.addActionListener(e -> {
+            viewStats.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        viewStatsPanel.add(viewGamesButton);
+
+        // View Tournaments Button
+        JButton viewTournamentsButton = new JButton("View tournaments");
+        viewTournamentsButton.addActionListener(e -> {
+            viewStats.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        viewStatsPanel.add(viewTournamentsButton);
+
+        // Round Robin Button
+        JButton roundRobinButton = new JButton("Round Robin");
+        roundRobinButton.addActionListener(e -> {
+            createTournament.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        createTournamentPanel.add(roundRobinButton);
+        // Player count button
+        JLabel createTournamentRoster = new JLabel("Players:");
+        createTournamentPanel.add(createTournamentRoster);
+
+        // List of players
+        JTextField listOfPlayers = new JTextField("List of players");
+        createTournamentPanel.add(listOfPlayers);
+        // Start button
+        JButton Start = new JButton("Start");
+        Start.addActionListener(e -> {
+            Start.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        createTournamentPanel.add(Start);
+        // Change password textbox
+        JTextField changingPasswordField = new JTextField("New Password");
+        changePasswordPanel.add(changingPasswordField);
+
+        // Back buttons for stats, tourney, user data & password
+        JButton viewStatsBackButton = new JButton("back");
+        viewStatsBackButton.addActionListener(e -> {
+            viewStats.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        viewStatsPanel.add(viewStatsBackButton);
+
+        JButton createTournamentBackButton = new JButton("back");
+        createTournamentBackButton.addActionListener(e -> {
+            mainMenu.setVisible(true);
+        });
+        createTournamentPanel.add(createTournamentBackButton);
+
+        JButton editUserDataBackButton = new JButton("back");
+        editUserDataBackButton.addActionListener(e -> {
+            mainMenu.setVisible(true);
+        });
+        editUserDataPanel.add(editUserDataBackButton);
+
+        JTextField newPassword = new JTextField("Type in your new password here!!!!");
+        editUserDataPanel.add(newPassword);
+
+        JButton changePasswordBackButton = new JButton("back");
+        changePasswordBackButton.addActionListener(e -> {
+            changingPasswordField.setText("New password");
+            changePassword.setVisible(false);
+            mainMenu.setVisible(true);
+        });
+        changePasswordPanel.add(changePasswordBackButton);
+
+        JTextArea rulesArea = new JTextArea(
+                "Connect Four is played with two people. In turns, each player (red and green) places a block in the grid. " +
+                        "When one player gets four blocks in a row, either vertically or diagonally, they win.");
+        rulesArea.setLineWrap(true);
+        rulesArea.setWrapStyleWord(true);
+        rulesArea.setEditable(false);
+
+        JScrollPane rulesScrollPane = new JScrollPane(rulesArea);
+        rulesScrollPane.setPreferredSize(new Dimension(600, 200));
+
+        howToPlayPanel.add(rulesScrollPane);
+
+        JButton changePasswordConfirmButton = new JButton("Confirm");
+        changePasswordConfirmButton.addActionListener(e -> {
+            if (!Objects.equals(changingPasswordField.getText(), "") && Objects.equals(changingPasswordField.getText(), changingPasswordField.getText().replaceAll("[^a-zA-Z\\s]", ""))) {
+                Accounts.accountRepository.get(mode).changePassword(changingPasswordField.getText());
+                changingPasswordField.setText("New password");
+                String tempString = Accounts.accountRepository.get(mode).toString();
+
+                try {
+                    FileHandling.updateMembers(String.valueOf(mode), tempString);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                changePassword.setVisible(false);
+                mainMenu.setVisible(true);
+            }
+        });
+        changePasswordPanel.add(changePasswordConfirmButton);
 
         accountMenu.setVisible(true);
     }
-
 }

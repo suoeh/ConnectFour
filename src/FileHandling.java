@@ -1,5 +1,8 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class FileHandling {
     public FileHandling() throws IOException {}
@@ -44,6 +47,29 @@ public class FileHandling {
             // System.out.println(game);
             Games.repository.add(game);
         }
+    }
+
+    public void updateMembers(String number, String replace) throws IOException {
+        BufferedReader accountReader2 = new BufferedReader(new FileReader("src/Accounts.csv"));
+        BufferedWriter accountWriter2 = new BufferedWriter(new FileWriter("src/Accounts.csv"));
+        String line;
+        List<String> lines = new ArrayList<>();
+
+        while ((line = accountReader2.readLine()) != null) {
+            if (Objects.equals(line.split(",")[1], number)) {
+                line = replace;
+            }
+            lines.add(line);
+        }
+
+        for (String modifiedLine : lines) {
+            System.out.println(modifiedLine);
+            accountWriter2.write(modifiedLine);
+            accountWriter2.newLine();
+        }
+
+        accountReader2.close();
+        accountWriter2.close();
     }
 
 
