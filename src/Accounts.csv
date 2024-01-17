@@ -1,5 +1,6 @@
-admin,0,admin,0,0,0,1000
-dylann,800130,j,1,0,1,1111
-andrew,800131,andrew,1,1,2,900
-Name,800,Password,0,1,1,950
-dyal,800103,aaaaaa,1,0,0,1050
+admin,0,Password,-2,0,0,1000
+DDDD,800130,j,1,0,1,1111
+BBB,800131,andrew,10,1,2,900
+CCCC,800,Password,5,1,1,950
+EEEEE,800103,aaaaaa,2,0,0,1050
+FFFF,8001,aaaaaa,20,0,0,1050

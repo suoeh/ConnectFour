@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class GUI {
@@ -263,7 +265,7 @@ public class GUI {
         viewGames.setSize(800, 600);
         viewGames.setLocationRelativeTo(null);
 
-        JFrame viewTourneys = new JFrame("View Games");
+        JFrame viewTourneys = new JFrame("View Tourneys");
         viewTourneys.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         viewTourneys.setSize(800, 600);
         viewTourneys.setLocationRelativeTo(null);
@@ -272,19 +274,133 @@ public class GUI {
         JPanel viewGamesPanel = new JPanel();
         JPanel viewTourneysPanel = new JPanel();
 
+        viewPlayers.add(viewPlayersPanel);
+        viewGames.add(viewGamesPanel);
+        viewTourneys.add(viewTourneysPanel);
+
+        String[] playerColumns = {"Name", "Student ID", "Wins", "Losses", "Ties", "Rating"};
+        Object[][] playerData = new Object[30][6];
+
         // View players button
         JButton viewPlayersButton = new JButton("View players");
         viewPlayersButton.addActionListener(e -> {
+            ArrayList<Account> tempList = new ArrayList<>(Accounts.accountRepository.values());
+            tempList.sort(Comparator.comparing(o -> o.name));
+            System.out.println(tempList);
+            playerData[0][0] = tempList.get(Accounts.accountRepository.size() - 1).name;
+            playerData[0][1] = tempList.get(Accounts.accountRepository.size() - 1).studentNumber;
+            playerData[0][2] = tempList.get(Accounts.accountRepository.size() - 1).wins;
+            playerData[0][3] = tempList.get(Accounts.accountRepository.size() - 1).losses;
+            playerData[0][4] = tempList.get(Accounts.accountRepository.size() - 1).ties;
+            playerData[0][5] = tempList.get(Accounts.accountRepository.size() - 1).rating;
+            for (int i = Accounts.accountRepository.size() - 2; i >= 0; i--) {
+                playerData[i + 1][0] = tempList.get(i).name;
+                playerData[i + 1][1] = tempList.get(i).studentNumber;
+                playerData[i + 1][2] = tempList.get(i).wins;
+                playerData[i + 1][3] = tempList.get(i).losses;
+                playerData[i + 1][4] = tempList.get(i).ties;
+                playerData[i + 1][5] = tempList.get(i).rating;
+            }
+
             viewStats.setVisible(false);
-            mainMenu.setVisible(true);
+            viewPlayers.setVisible(true);
         });
         viewStatsPanel.add(viewPlayersButton);
+
+        JTable table = new JTable(playerData, playerColumns);
+        JScrollPane scrollPane = new JScrollPane(table);
+        viewPlayersPanel.add(scrollPane);
+
+        JButton sortByNameButton = new JButton("Sort Alphabetically");
+        sortByNameButton.addActionListener(e -> {
+            ArrayList<Account> tempList = new ArrayList<>(Accounts.accountRepository.values());
+            tempList.sort(Comparator.comparing(o -> o.name));
+            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).name, 0, 0);
+            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).studentNumber, 0, 1);
+            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).wins, 0, 2);
+            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).losses, 0, 3);
+            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).ties, 0, 4);
+            table.getModel().setValueAt(tempList.get(Accounts.accountRepository.size() - 1).rating, 0, 5);
+            for (int i = Accounts.accountRepository.size() - 2; i >= 0; i--) {
+                table.getModel().setValueAt(tempList.get(i).name,i + 1, 0);
+                table.getModel().setValueAt(tempList.get(i).studentNumber, i + 1, 1);
+                table.getModel().setValueAt(tempList.get(i).wins, i + 1, 2);
+                table.getModel().setValueAt(tempList.get(i).losses,i + 1, 3);
+                table.getModel().setValueAt(tempList.get(i).ties, i + 1, 4);
+                table.getModel().setValueAt(tempList.get(i).rating, i + 1, 5);
+            }
+        });
+        viewPlayersPanel.add(sortByNameButton);
+
+        JButton sortByWinsButton = new JButton("Sort by Wins");
+        sortByWinsButton.addActionListener(e -> {
+            ArrayList<Account> tempList = new ArrayList<>(Accounts.accountRepository.values());
+            int size = Accounts.accountRepository.size();
+            tempList.sort(Comparator.comparing(o -> o.wins));
+            for (int i = 0; i < Accounts.accountRepository.size(); i++) {
+                table.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
+                table.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
+                table.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
+                table.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
+                table.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
+                table.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
+            }
+        });
+        viewPlayersPanel.add(sortByWinsButton);
+
+        JButton sortByLossesButton = new JButton("Sort by Losses");
+        sortByLossesButton.addActionListener(e -> {
+            ArrayList<Account> tempList = new ArrayList<>(Accounts.accountRepository.values());
+            int size = Accounts.accountRepository.size();
+            tempList.sort(Comparator.comparing(o -> o.losses));
+            for (int i = 0; i < Accounts.accountRepository.size(); i++) {
+                table.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
+                table.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
+                table.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
+                table.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
+                table.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
+                table.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
+            }
+        });
+        viewPlayersPanel.add(sortByLossesButton);
+
+        JButton sortByTiesButton = new JButton("Sort by Ties");
+        sortByTiesButton.addActionListener(e -> {
+            ArrayList<Account> tempList = new ArrayList<>(Accounts.accountRepository.values());
+            int size = Accounts.accountRepository.size();
+            tempList.sort(Comparator.comparing(o -> o.ties));
+            for (int i = 0; i < Accounts.accountRepository.size(); i++) {
+                table.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
+                table.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
+                table.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
+                table.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
+                table.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
+                table.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
+            }
+        });
+        viewPlayersPanel.add(sortByTiesButton);
+
+        JButton sortByRatingButton = new JButton("Sort by Rating");
+        sortByRatingButton.addActionListener(e -> {
+            ArrayList<Account> tempList = new ArrayList<>(Accounts.accountRepository.values());
+            int size = Accounts.accountRepository.size();
+            tempList.sort(Comparator.comparing(o -> o.rating));
+            for (int i = 0; i < Accounts.accountRepository.size(); i++) {
+                table.getModel().setValueAt(tempList.get(size - i - 1).name,i, 0);
+                table.getModel().setValueAt(tempList.get(size - i - 1).studentNumber, i, 1);
+                table.getModel().setValueAt(tempList.get(size - i - 1).wins, i, 2);
+                table.getModel().setValueAt(tempList.get(size - i - 1).losses,i, 3);
+                table.getModel().setValueAt(tempList.get(size - i - 1).ties, i, 4);
+                table.getModel().setValueAt(tempList.get(size - i - 1).rating, i, 5);
+            }
+        });
+        viewPlayersPanel.add(sortByRatingButton);
 
         // View games button
         JButton viewGamesButton = new JButton("View games");
         viewGamesButton.addActionListener(e -> {
             viewStats.setVisible(false);
-            mainMenu.setVisible(true);
+            viewGames.setVisible(true);
         });
         viewStatsPanel.add(viewGamesButton);
 
@@ -292,7 +408,7 @@ public class GUI {
         JButton viewTournamentsButton = new JButton("View tournaments");
         viewTournamentsButton.addActionListener(e -> {
             viewStats.setVisible(false);
-            mainMenu.setVisible(true);
+            viewTourneys.setVisible(true);
         });
         viewStatsPanel.add(viewTournamentsButton);
 
@@ -303,6 +419,27 @@ public class GUI {
             mainMenu.setVisible(true);
         });
         viewStatsPanel.add(viewStatsBackButton);
+
+        JButton viewPlayersBackButton = new JButton("Back");
+        viewPlayersBackButton.addActionListener(e -> {
+            viewPlayers.setVisible(false);
+            viewStats.setVisible(true);
+        });
+        viewPlayersPanel.add(viewPlayersBackButton);
+
+        JButton viewGamesBackButton = new JButton("Back");
+        viewGamesBackButton.addActionListener(e -> {
+            viewGames.setVisible(false);
+            viewStats.setVisible(true);
+        });
+        viewGamesPanel.add(viewGamesBackButton);
+
+        JButton viewTourneysBackButton = new JButton("Back");
+        viewTourneysBackButton.addActionListener(e -> {
+            viewTourneys.setVisible(false);
+            viewStats.setVisible(true);
+        });
+        viewTourneysPanel.add(viewTourneysBackButton);
 
         // rules
         JTextArea rulesArea = new JTextArea(
