@@ -661,7 +661,7 @@ public class GUI {
         createTournamentPanel.add(createTournamentRoster);
 
         // List of players
-        JTextField listOfPlayers = new JTextField("List of players", 50);
+        JTextField listOfPlayers = new JTextField("List of players, seperated only by spaces", 50);
         createTournamentPanel.add(listOfPlayers);
 
         // Round Robin Button
@@ -705,7 +705,7 @@ public class GUI {
                 // System.out.println(queueOfPlayers); DEBUG CODE!!
                 createTournament.setVisible(false);
                 mainMenu.setVisible(true);
-                listOfPlayers.setText("List of players");
+                listOfPlayers.setText("List of players, seperated only by spaces");
 
                 int playerOne;
                 int playerTwo;
